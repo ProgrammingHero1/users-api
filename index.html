@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users API</title>
+    <style>
+        .user {
+            color: royalblue;
+        }
+    </style>
+</head>
+
+<body>
+    <input id="user-count" type="text"><button id="load-user">Load User</button>
+    <div id="users">
+    </div>
+    <div id="user-detail">
+
+    </div>
+    <script>
+        document.getElementById('load-user').addEventListener('click', function() {
+            const countText = document.getElementById('user-count').value;
+            const count = parseInt(countText);
+            fetch('https://jsonplaceholder.typicode.com/users')
+                .then(res => res.json())
+                .then(data => {
+                    data = data.slice(0, count);
+                    const userContainer = document.getElementById('users');
+                    userContainer.innerHTML = '';
+                    for (let i = 0; i < data.length; i++) {
+                        const user = data[i];
+                        const p = document.createElement('p');
+                        p.innerHTML = `
+                    <p class="user">Name: <strong>${user.name}</strong> <button onclick="getUserDetail(${user.id})">Get Details - ${user.id}</button></p>
+                    `;
+                        userContainer.appendChild(p);
+                    }
+                })
+        })
+
+
+
+        function getUserDetail(userId) {
+            fetch(`https://jsonplaceholder.typicode.com/users/${userId}`)
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data)
+                    const detail = document.getElementById('user-detail');
+                    detail.innerHTML = `
+                        <h1>${data.name}</h1>
+                        <h4> Email: ${data.email}</h4>
+                        <p>Phone: ${data.phone}</p>
+                    `
+                })
+        }
+    </script>
+</body>
+
+</html>
